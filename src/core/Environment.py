@@ -43,7 +43,8 @@ class Environment:
 
     def is_forbidden_state(self, state):
         return state not in self.__states \
-               or (self.is_brick_wall(state) and self.__brick_walls) or self.is_wall(state) or self.is_start(state)
+           or (self.is_brick_wall(state) and self.__brick_walls) \
+           or self.is_wall(state) or self.is_start(state)
 
     def is_wall(self, state):
         return self.__states[state] == MAZE_WALL
