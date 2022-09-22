@@ -8,6 +8,7 @@ from random import *
 import arcade
 import os
 import pickle
+
 import matplotlib.pyplot as plt
 
 MAZE = """
@@ -15,9 +16,9 @@ MAZE = """
 #     #       #
 ####  #   #   #
 #     #  ### ##
-#        #    #
+#             #
 #     #  #    #
-#  #######    #
+# ########    #
 #     #  ##   #
 #        #    #
 #             #
@@ -43,7 +44,7 @@ MAZE_GOAL = '*'
 
 SPRITE_SIZE = 64
 
-FILE_QTABLE = 'qtable.dat'
+FILE_AGENT = 'agent.al2'
 
 
 class Environment:
@@ -127,14 +128,13 @@ class Environment:
 class Agent:
     def __init__(self, env, alpha=1, gamma=1, exploration=0, cooling_rate=0.99):
         self.__env = env
-        self.__score = 0
-        self.__history = []
         self.reset(False)
         self.__init_qtable()
         self.__alpha = alpha
         self.__gamma = gamma
         self.__exploration = exploration
         self.__cooling_rate = cooling_rate
+        self.__history = []
 
     def reset(self, append_score=True):
         if append_score:
@@ -179,11 +179,11 @@ class Agent:
 
     def save(self, filename):
         with open(filename, 'wb') as file:
-            pickle.dump(self.__qtable, file)
+            pickle.dump((self.__qtable, self.__history), file)
 
     def load(self, filename):
         with open(filename, 'rb') as file:
-            self.__qtable = pickle.load(file)
+            self.__qtable, self.__history = pickle.load(file)
 
     @property
     def score(self):
@@ -270,18 +270,14 @@ if __name__ == '__main__':
     env = Environment(MAZE)
 
     agent = Agent(env)
-    if os.path.exists(FILE_QTABLE):
-        agent.load(FILE_QTABLE)
-
-    print(len(env.states))
-
-    # agent.learn(20)
+    if os.path.exists(FILE_AGENT):
+        agent.load(FILE_AGENT)
 
     windows = MazeWindow(agent)
     windows.setup()
     arcade.run()
 
-    agent.save(FILE_QTABLE)
+    agent.save(FILE_AGENT)
 
     print(agent.score)
 
