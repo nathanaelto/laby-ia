@@ -129,19 +129,18 @@ class Agent:
         self.__env = env
         self.__score = 0
         self.__history = []
-        self.reset()
+        self.reset(False)
         self.__init_qtable()
         self.__alpha = alpha
         self.__gamma = gamma
         self.__exploration = exploration
         self.__cooling_rate = cooling_rate
 
-    def reset(self, append_score = True):
+    def reset(self, append_score=True):
         if append_score:
             self.__history.append(self.__score)
         self.__state = env.start
         self.__score = 0
-
 
     def heat(self):
         self.__exploration = 1
@@ -263,6 +262,8 @@ class MazeWindow(arcade.Window):
     def on_key_press(self, key, modifiers):
         if key == arcade.key.R:
             self.new_game()
+        elif key == arcade.key.H:
+            self.__agent.heat()
 
 
 if __name__ == '__main__':
@@ -286,4 +287,3 @@ if __name__ == '__main__':
 
     plt.plot(agent.history)
     plt.show()
-
